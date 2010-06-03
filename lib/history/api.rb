@@ -50,7 +50,7 @@ class Api < Sinatra::Base
   end
 
   before do
-    if !session[:user_id] && request.path != "/auth/facebook"
+    if !session[:user_id] && request.path != "/auth/facebook" && request.path != "/auth/facebook/callback"
       redirect '/auth/facebook'
     end
   end
