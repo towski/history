@@ -81,4 +81,8 @@ class Api < Sinatra::Base
   get '/history/:id' do
     get_from_facebook(session[:user_id], params[:id]).inspect
   end
+
+  get '/history/:first_id/:second_id' do
+    get_from_facebook(params[:first_id], params[:second_id]).inspect
+  end
 end
