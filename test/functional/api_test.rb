@@ -21,4 +21,9 @@ context "Api" do
     get '/', {}, {'rack.session' => {:user_id => 1}}
     assert last_response.ok?
   end
+
+  test "request facebook auth redirect" do
+    get '/auth/facebook'
+    assert last_response.redirect?
+  end
 end
