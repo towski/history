@@ -1,1 +1,7 @@
-<fbml friend thing></fbml>
+<ul>
+<% @friends.each do |friend| %>
+  <li>
+    <a href="/history/<%= friend.id %>"><%= friend.first_name %> <%= friend.last_name %></a>
+  </li>
+<% end %>
+</ul>

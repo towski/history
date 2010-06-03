@@ -36,6 +36,19 @@ class Api < Sinatra::Base
     end
   end
 
+  def get_friends(user_id)
+    key = "#{user_id}_friends"
+    results = CACHE.get(key)
+    if !results
+      response = access_token.get("/me/friends")
+      results = JSON.parse(response)
+      CACHE.set(key, results)
+      results
+    else
+      results
+    end
+  end
+
   before do
     if !session[:user_id]
       redirect '/auth/facebook'
@@ -43,6 +56,7 @@ class Api < Sinatra::Base
   end
 
   get '/' do
+    @friends = get_friends(session[:user_id])
     erb :index
   end
 

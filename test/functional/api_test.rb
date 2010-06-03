@@ -16,7 +16,8 @@ context "Api" do
     assert last_response.redirect?
   end
   
-  test "form page" do
+  test "index without a parameter" do
+    mock(CACHE).get("1_friends"){[]}
     get '/', {}, {'rack.session' => {:user_id => 1}}
     assert last_response.ok?
   end
