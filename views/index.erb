@@ -1,7 +1,7 @@
 <ul>
 <% @friends.each do |friend| %>
   <li>
-    <a href="/history/<%= friend.id %>"><%= friend.first_name %> <%= friend.last_name %></a>
+    <a href="/history/<%= friend["id"] %>"><%= friend["name"] %></a>
   </li>
 <% end %>
 </ul>

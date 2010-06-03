@@ -41,7 +41,7 @@ class Api < Sinatra::Base
     results = CACHE.get(key)
     if !results
       response = access_token.get("/me/friends")
-      results = JSON.parse(response)
+      results = JSON.parse(response)["data"]
       CACHE.set(key, results)
       results
     else
