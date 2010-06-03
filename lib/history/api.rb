@@ -21,12 +21,15 @@ class Api < Sinatra::Base
     key = "#{user_id}_#{friend_id}"
     results = CACHE.get(key)
     if !results
-      query1 = "SELECT created_time, message, actor_id FROM stream WHERE source_id = #{user_id} AND actor_id = #{friend_id}"
+      query1 = "SELECT created_time, message, actor_id, comments, likes FROM stream WHERE source_id = #{user_id} AND actor_id = #{friend_id}"
       response = access_token.get("https://api.facebook.com/method/fql.query", :query => query1, :format => "json")
       results1 = JSON.parse(response)
-      query2 = "SELECT created_time, message, actor_id FROM stream WHERE source_id = #{friend_id} AND actor_id = #{user_id}"
+      query2 = "SELECT created_time, message, actor_id, comments, likes FROM stream WHERE source_id = #{friend_id} AND actor_id = #{user_id}"
       response = access_token.get("https://api.facebook.com/method/fql.query", :query => query2, :format => "json")
       results2 = JSON.parse(response)
+      # if the api returns a hash, it's empty
+      results1 = [] if results1.kind_of?(Hash)
+      results2 = [] if results2.kind_of?(Hash)
       results = results1 + results2
       results = results.sort_by{|result| -result["created_time"]}
       CACHE.set(key, results)
