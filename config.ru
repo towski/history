@@ -1,3 +1,3 @@
 require 'rubygems'
 require 'config'
-Api.run!
+run Api
