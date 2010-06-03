@@ -49,7 +49,7 @@ class Api < Sinatra::Base
   get '/auth/facebook' do
     redirect client.web_server.authorize_url(
       :redirect_uri => redirect_uri,
-      :scope => 'read_stream'
+      :scope => 'read_stream,read_friendlists'
     )
   end
 
