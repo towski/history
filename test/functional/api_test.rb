@@ -2,6 +2,8 @@ require File.dirname(__FILE__) + "/../test_helper"
 require 'rack/test'
 
 #puts last_request.env['sinatra.error']
+Api.set :sessions, false
+Api.set :environment, :test
 context "Api" do
   include Rack::Test::Methods
 
@@ -9,8 +11,13 @@ context "Api" do
     Api.new
   end
 
-  test "form page" do
+  test "directs to authorization if no user_id" do
     get '/'
     assert last_response.redirect?
+  end
+  
+  test "form page" do
+    get '/', {}, {'rack.session' => {:user_id => 1}}
+    assert last_response.ok?
   end
 end
