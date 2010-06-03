@@ -28,12 +28,22 @@ class Api < Sinatra::Base
       response = access_token.get("https://api.facebook.com/method/fql.query", :query => query2, :format => "json")
       results2 = JSON.parse(response)
       results = results1 + results2
-      results.sort_by{|result| -result["created_time"]}
+      results = results.sort_by{|result| -result["created_time"]}
       CACHE.set(key, results)
       results
     else
       results
     end
+  end
+
+  before do
+    if !session[:user_id]
+      redirect '/auth/facebook'
+    end
+  end
+
+  get '/' do
+    erb :index
   end
 
   get '/auth/facebook' do
