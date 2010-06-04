@@ -21,16 +21,11 @@ class Api < Sinatra::Base
     key = "#{user_id}_#{friend_id}"
     results = CACHE.get(key)
     if !results
-      query1 = "SELECT created_time, message, actor_id, comments, likes FROM stream WHERE source_id = #{user_id} AND actor_id = #{friend_id}"
-      response = access_token.get("https://api.facebook.com/method/fql.query", :query => query1, :format => "json")
-      results1 = JSON.parse(response)
-      query2 = "SELECT created_time, message, actor_id, comments, likes FROM stream WHERE source_id = #{friend_id} AND actor_id = #{user_id}"
-      response = access_token.get("https://api.facebook.com/method/fql.query", :query => query2, :format => "json")
-      results2 = JSON.parse(response)
+      query = "SELECT created_time, message, actor_id, source_id, comments, likes FROM stream WHERE source_id = #{user_id} AND actor_id = #{friend_id}"
+      response = access_token.get("https://api.facebook.com/method/fql.query", :query => query, :format => "json")
+      results = JSON.parse(response)
       # if the api returns a hash, it's empty
-      results1 = [] if results1.kind_of?(Hash)
-      results2 = [] if results2.kind_of?(Hash)
-      results = results1 + results2
+      results = [] if results1.kind_of?(Hash)
       results = results.sort_by{|result| -result["created_time"]}
       CACHE.set(key, results)
       results
@@ -79,10 +74,12 @@ class Api < Sinatra::Base
   end
 
   get '/history/:id' do
-    get_from_facebook(session[:user_id], params[:id]).inspect
+    @events = get_from_facebook(session[:user_id], params[:id])
+    erb :history
   end
 
   get '/history/:first_id/:second_id' do
-    get_from_facebook(params[:first_id], params[:second_id]).inspect
+    @events = get_from_facebook(params[:first_id], params[:second_id])
+    erb :history
   end
 end
