@@ -21,7 +21,7 @@ class Api < Sinatra::Base
     key = "#{user_id}_#{friend_id}"
     results = CACHE.get(key)
     if !results
-      query = "SELECT created_time, message, actor_id, source_id, comments, likes FROM stream WHERE source_id = #{user_id} AND actor_id = #{friend_id}"
+      query = "SELECT created_time, message, actor_id, source_id, comments, likes FROM stream WHERE (source_id = #{user_id} AND actor_id = #{friend_id}) OR (actor_id = #{user_id} AND source_id = #{friend_id})"
       response = access_token.get("https://api.facebook.com/method/fql.query", :query => query, :format => "json")
       results = JSON.parse(response)
       # if the api returns a hash, it's empty
