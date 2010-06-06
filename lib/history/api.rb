@@ -14,47 +14,21 @@ class Api < Sinatra::Base
   end
 
   def access_token
-    OAuth2::AccessToken.new(client, session[:access_token])
+    OAuth2::AccessToken.new(client, CACHE.get("#{session[:user_id]}-#{API_KEY}"))
   end
 
-  def get_from_facebook(user_id, friend_id)
-    key = "#{user_id}_#{friend_id}"
-    results = CACHE.get(key)
-    if !results
-      query = "SELECT created_time, message, actor_id, source_id, comments, likes FROM stream WHERE (source_id = #{user_id} AND actor_id = #{friend_id}) OR (actor_id = #{user_id} AND source_id = #{friend_id})"
-      response = access_token.get("https://api.facebook.com/method/fql.query", :query => query, :format => "json")
-      results = JSON.parse(response)
-      # if the api returns a hash, it's empty
-      results = [] if results1.kind_of?(Hash)
-      results = results.sort_by{|result| -result["created_time"]}
-      CACHE.set(key, results)
-      results
-    else
-      results
-    end
-  end
-
-  def get_friends(user_id)
-    key = "#{user_id}_friends"
-    results = CACHE.get(key)
-    if !results
-      response = access_token.get("/me/friends")
-      results = JSON.parse(response)["data"]
-      CACHE.set(key, results)
-      results
-    else
-      results
-    end
+  def current_user
+    session[:user_id] ? User.new(session[:user_id]) : nil
   end
 
   before do
-    if !session[:user_id] && request.path != "/auth/facebook" && request.path != "/auth/facebook/callback"
+    if !current_user && request.path != "/auth/facebook" && request.path != "/auth/facebook/callback"
       redirect '/auth/facebook'
     end
   end
 
   get '/' do
-    @friends = get_friends(session[:user_id])
+    @friends = current_user.get_friends
     erb :index
   end
 
@@ -67,19 +41,19 @@ class Api < Sinatra::Base
 
   get '/auth/facebook/callback' do
     access_token = client.web_server.get_access_token(params[:code], :redirect_uri => redirect_uri)
-    session[:access_token] = access_token.token
     user = JSON.parse(access_token.get('/me'))
+    Cache.set("#{user["id"]}-#{API_KEY}", access_token.token)
     session[:user_id] = user["id"]
     redirect '/history/3400804'
   end
 
   get '/history/:id' do
-    @events = get_from_facebook(session[:user_id], params[:id])
+    @events = current_user.get_from_facebook(params[:id])
     erb :history
   end
 
   get '/history/:first_id/:second_id' do
-    @events = get_from_facebook(params[:first_id], params[:second_id])
+    @events = User.new(params[:first_id]).get_from_facebook(params[:second_id])
     erb :history
   end
 end
