@@ -1,9 +1,11 @@
-$APP_ENV = "test"
+$env = "testing"
 require 'rubygems'
 require 'ruby-debug'
 require File.dirname(__FILE__) + '/../config'
 require 'test/unit'
 require 'rr'
+API_KEY="something"
+SECRET_KEY="something"
 
 class Test::Unit::TestCase
   include RR::Adapters::TestUnit

@@ -7,8 +7,10 @@ require 'curb'
 require 'history'
 
 facebook = YAML.load(File.open("config/facebook.yml").read)
-API_KEY = facebook["api_key"]
-SECRET_KEY = facebook["secret_key"]
+if $env != "testing"
+  API_KEY = facebook["api_key"]
+  SECRET_KEY = facebook["secret_key"]
+end
 
 require 'memcache'
 CACHE = MemCache.new 'localhost:11211', :namespace => 'my_namespace'

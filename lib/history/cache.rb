@@ -1,8 +1,8 @@
 class Cache
   def self.get(key)
     results = CACHE.get(key)
-    if !results
-      results = yield
+    if !results && block_given?
+      results = yield 
       CACHE.set(key, results)
     else
       results

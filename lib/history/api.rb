@@ -9,27 +9,26 @@ class Api < Sinatra::Base
     uri.to_s
   end
 
-  def client
+  def self.client
     OAuth2::Client.new(API_KEY, SECRET_KEY, :site => 'https://graph.facebook.com')
   end
 
-  def access_token
-    OAuth2::AccessToken.new(client, CACHE.get("#{session[:user_id]}-#{API_KEY}"))
+  def client
+    self.class.client
   end
 
   def current_user
-    session[:user_id] ? User.new(session[:user_id]) : nil
+    session[:user_id] ? User.new(session[:user_id], client) : nil
+  end
+
+  def access_token
+    current_user.access_token
   end
 
   before do
     if !current_user && request.path != "/auth/facebook" && request.path != "/auth/facebook/callback"
       redirect '/auth/facebook'
     end
-  end
-
-  get '/' do
-    @friends = current_user.get_friends
-    erb :index
   end
 
   get '/auth/facebook' do
@@ -47,13 +46,16 @@ class Api < Sinatra::Base
     redirect '/history/3400804'
   end
 
+  get '/' do
+    @friends = current_user.friends
+    erb :index
+  end
+
   get '/history/:id' do
-    @events = current_user.get_from_facebook(params[:id])
-    erb :history
+    current_user.history(params[:id]).to_json
   end
 
   get '/history/:first_id/:second_id' do
-    @events = User.new(params[:first_id]).get_from_facebook(params[:second_id])
-    erb :history
+    History.new(first_id, second_id, current_user.access_token).to_json
   end
 end
