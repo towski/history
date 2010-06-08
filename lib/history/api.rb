@@ -60,6 +60,6 @@ class Api < Sinatra::Base
   end
 
   get '/history/:first_id/:second_id' do
-    History.new(first_id, second_id, current_user.access_token).to_json
+    History.new(params[:first_id], params[:second_id], current_user.access_token).to_json
   end
 end

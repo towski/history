@@ -4,9 +4,8 @@ class Cache
     if !results && block_given?
       results = yield 
       CACHE.set(key, results)
-    else
-      results
     end
+    results
   end
 
   def self.set(key, value)
