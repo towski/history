@@ -33,7 +33,6 @@ class Api < Sinatra::Base
 
   get '/auth/facebook' do
     redirect client.web_server.authorize_url(
-      :redirect_uri => redirect_uri,
       :scope => 'read_stream,read_friendlists'
     )
   end
@@ -43,16 +42,21 @@ class Api < Sinatra::Base
     user = JSON.parse(access_token.get('/me'))
     Cache.set("#{user["id"]}-#{API_KEY}", access_token.token)
     session[:user_id] = user["id"]
-    redirect '/history/3400804'
+    redirect '/'
   end
 
   get '/' do
-    @friends = current_user.friends
     erb :index
   end
 
+  get '/friends' do
+    current_user.friends.select{|f| f["name"] =~ /#{params[:q]}/i }.map do |friend_hash|
+      "#{friend_hash["name"]}|#{friend_hash["id"]}"
+    end.join("\n")
+  end
+
   get '/history/:id' do
-    current_user.history(params[:id]).to_json
+    current_user.history_with(params[:id]).to_json
   end
 
   get '/history/:first_id/:second_id' do

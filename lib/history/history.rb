@@ -13,4 +13,8 @@ class History
     results = [] if results.kind_of?(Hash)
     results.sort_by{|result| -result["created_time"]}
   end
+
+  def to_json
+    @stream.to_json
+  end
 end

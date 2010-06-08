@@ -1,7 +1,31 @@
-<ul>
-<% @friends.each do |friend| %>
-  <li>
-    <a href="/history/<%= friend["id"] %>"><%= friend["name"] %></a>
-  </li>
-<% end %>
-</ul>
+<script type="text/javascript">
+$().ready(function() {
+  setFacebookPic = function(id){
+    FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic($("#pic"+id)[0])); 
+  };
+  $("#imageSearch").autocomplete("friends", {
+    width: 320,
+    max: 4,
+    highlight: false,
+    scroll: true,
+    scrollHeight: 300,
+    formatItem: function(data, i, n, value) {
+      //return "<img src='images/" + value + "'/> " + value.split(".")[0];
+      setTimeout('setFacebookPic('+data[1]+');', 10);
+      return '<div style="clear:right" id="item'+data[1]+'">'+value+'<div id="pic'+data[1]+'" uid="'+data[1]+'" size="square" style="float:right"></div></div>'
+    },
+    formatResult: function(data, value) {
+      return value.split(".")[0];
+    }
+  }).result(function(e, item) {
+    $('#item'+item[1]).insertAfter('#hey');
+    $("#imageSearch").attr("value", "");
+  });
+});
+</script>
+<p>
+  <label>Image search (remote):</label>
+  <input type="text" id='imageSearch' />
+  <input type="button" value="Get Value" />
+</p>
+<div id='hey'></div>
