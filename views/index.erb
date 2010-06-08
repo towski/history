@@ -3,14 +3,13 @@ $().ready(function() {
   setFacebookPic = function(id){
     FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic($("#pic"+id)[0])); 
   };
-  $("#imageSearch").autocomplete("friends", {
+  $("#friends").autocomplete("friends", {
     width: 320,
     max: 4,
     highlight: false,
     scroll: true,
     scrollHeight: 300,
     formatItem: function(data, i, n, value) {
-      //return "<img src='images/" + value + "'/> " + value.split(".")[0];
       setTimeout('setFacebookPic('+data[1]+');', 10);
       return '<div style="clear:right" id="item'+data[1]+'">'+value+'<div id="pic'+data[1]+'" uid="'+data[1]+'" size="square" style="float:right"></div></div>'
     },
@@ -18,14 +17,24 @@ $().ready(function() {
       return value.split(".")[0];
     }
   }).result(function(e, item) {
-    $('#item'+item[1]).insertAfter('#hey');
+    var addData = function(id){
+      return function(data){
+        data = $.parseJSON(data);
+        $(data).each(function(index, item){
+          $("#history").append("<li class='"+id+"'>"+item+"</li>");
+        });
+      }
+    }
+    $('#item'+item[1]).insertAfter('#users');
+    $.ajax({url:"/history/"+item[1], success:addData(item[1])});
+    $.ajax({url:"/friend_history/"+item[1], success:addData(item[1])});
     $("#imageSearch").attr("value", "");
   });
 });
 </script>
 <p>
-  <label>Image search (remote):</label>
-  <input type="text" id='imageSearch' />
-  <input type="button" value="Get Value" />
+  <label>Search for friends:</label>
+  <input type="text" id='friends' />
 </p>
-<div id='hey'></div>
+<div id='users'></div>
+<ul id='history'></ul>

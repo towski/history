@@ -33,6 +33,7 @@ class Api < Sinatra::Base
 
   get '/auth/facebook' do
     redirect client.web_server.authorize_url(
+      :redirect_uri => redirect_uri,
       :scope => 'read_stream,read_friendlists'
     )
   end
@@ -57,6 +58,10 @@ class Api < Sinatra::Base
 
   get '/history/:id' do
     current_user.history_with(params[:id]).to_json
+  end
+
+  get '/friend_history/:id' do
+    History.new(params[:id], current_user.user_id, current_user.access_token).to_json
   end
 
   get '/history/:first_id/:second_id' do
