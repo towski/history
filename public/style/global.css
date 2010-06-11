@@ -20,3 +20,16 @@ li.event {
 .ac_results {
   background: white
 }
+
+.searchResult {
+  height: 55px;
+}
+
+.profilePic {
+  float:left;
+  clear:left;
+}
+
+img {
+  border: 0
+}

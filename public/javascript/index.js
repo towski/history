@@ -15,7 +15,7 @@ var EventListItem = Class.extend({
     var commentsUl = $(document.createElement('ul'))
     if(this.event.comments.count > 0){
       $(this.event.comments.comment_list).each(function(index, comment){
-        commentsUl.append("<li>"+comment.text+"</li>")
+        commentsUl.append("<li>&nbsp;"+comment.text+"</li>")
       });
     }
     var attachmentDiv = $(document.createElement('div'))
@@ -25,12 +25,12 @@ var EventListItem = Class.extend({
       if(media && media.type == "photo"){
         attachmentDiv.append("<a href='"+media.href+"'><img src='"+media.src+"'/></a>")
       }
-      attachmentDiv.append(attachment.description)
+      attachmentDiv.append("<br/> "+attachment.description)
       li.append(attachmentDiv)
     }
     li.append("\
     <div> \
-      <fb:name uid='"+this.event.actor_id+"'/>"+this.event.message+" \
+      <fb:name uid='"+this.event.actor_id+"'/>&nbsp;"+this.event.message+" \
     </div>");
     li.append(commentsUl)
     return li;

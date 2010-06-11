@@ -5,7 +5,7 @@ $().ready(function() {
   };
   formatItem = function(data, i, n, value) {
     setTimeout('setFacebookPic('+data[1]+');', 10);
-    return '<div id="item'+data[1]+'">'+value+'<div id="pic'+data[1]+'" uid="'+data[1]+'" size="square"></div></div>'
+    return '<div id="item'+data[1]+'" class="searchResult"><div id="pic'+data[1]+'" class="profilePic" uid="'+data[1]+'" size="square"></div><div class="name"> &nbsp;'+value+'</div></div>'
   };
   $("#friends").autocomplete("friends", {
     width: 320,
