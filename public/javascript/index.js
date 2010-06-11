@@ -10,11 +10,18 @@ var EventListItem = Class.extend({
     div.attr("uid", this.event.actor_id)
     div.attr("size", "square")
     div.attr("class", "eventPic")
+    var commentsUl = $(document.createElement('ul'))
+    if(this.event.comments.count > 0){
+      $(this.event.comments.comment_list).each(function(index, comment){
+        commentsUl.append("<li>"+comment.text+"</li>")
+      });
+    }
     li.append(div)
     li.append("\
     <div> \
       <fb:name uid='"+this.event.actor_id+"'/>"+this.event.message+" \
     </div>");
+    li.append(commentsUl)
     return li;
   }
 })
