@@ -7,16 +7,27 @@ var EventListItem = Class.extend({
     var li = $(document.createElement('li'))
     var div = $(document.createElement('div'))
     li.attr("created_time", this.event.created_time)
+    li.attr("class", "event")
     div.attr("uid", this.event.actor_id)
     div.attr("size", "square")
     div.attr("class", "eventPic")
+    li.append(div)
     var commentsUl = $(document.createElement('ul'))
     if(this.event.comments.count > 0){
       $(this.event.comments.comment_list).each(function(index, comment){
         commentsUl.append("<li>"+comment.text+"</li>")
       });
     }
-    li.append(div)
+    var attachmentDiv = $(document.createElement('div'))
+    var attachment = this.event.attachment
+    if(attachment.description != ""){
+      var media = attachment.media[0];
+      if(media && media.type == "photo"){
+        attachmentDiv.append("<a href='"+media.href+"'><img src='"+media.src+"'/></a>")
+      }
+      attachmentDiv.append(attachment.description)
+      li.append(attachmentDiv)
+    }
     li.append("\
     <div> \
       <fb:name uid='"+this.event.actor_id+"'/>"+this.event.message+" \
@@ -32,11 +43,11 @@ var History = Class.extend({
   },
 
   getUserFriendHistory: function(callback){
-    $.getJSON('/history/'+this.friend_id, callback)
+    $.getJSON('/history/'+this.friend_id, function(events){ callback(events); $('#loading').hide() })
   },
 
   getFriendUserHistory: function(callback){
-    $.getJSON('/friend_history/'+this.friend_id, callback)
+    $.getJSON('/friend_history/'+this.friend_id, function(events){ callback(events); $('#loading_friends').hide(); })
   },
 
   addHistory: function(events){
@@ -50,7 +61,7 @@ var History = Class.extend({
       } else{
         while(!eventPlaced){
           var head = $(list[0])
-          if(head == null){
+          if(head == null || list.length == 0){
             var li = new EventListItem(event)
             $("ul#history").append(li.toLi());
             eventPlaced = true;

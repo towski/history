@@ -5,14 +5,8 @@ $().ready(function() {
   };
   formatItem = function(data, i, n, value) {
     setTimeout('setFacebookPic('+data[1]+');', 10);
-    return '<div style="clear:right" id="item'+data[1]+'">'+value+'<div id="pic'+data[1]+'" uid="'+data[1]+'" size="square" style="float:right"></div></div>'
+    return '<div id="item'+data[1]+'">'+value+'<div id="pic'+data[1]+'" uid="'+data[1]+'" size="square"></div></div>'
   };
-  onClick = function(e, item) {
-    $('#item'+item[1]).insertAfter('#users');
-    var history = new History(item[1])
-    history.run()
-    $("#imageSearch").attr("value", "");
-  }
   $("#friends").autocomplete("friends", {
     width: 320,
     max: 4,
@@ -23,12 +17,20 @@ $().ready(function() {
     formatResult: function(data, value) {
       return value.split(".")[0];
     }
-  }).result(onClick);
+  }).result(function(e, item) {
+    $('div#loading_friends#friends_name').html(item[0])
+    $('.loading').show();
+    var history = new History(item[1])
+    history.run()
+    $('.event').remove();
+    $("#imageSearch").attr("value", "");
+  });
 });
 </script>
 <p>
   <label>Search for friends:</label>
   <input type="text" id='friends' />
 </p>
-<div id='users'></div>
+<div id="loading" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading your stream data</div>
+<div id="loading_friends" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading stream data from <span id="friends_name"></span></div>
 <ul id='history'></ul>

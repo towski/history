@@ -1,0 +1,22 @@
+body { 
+  font-family:"lucida grande",tahoma,verdana,arial,sans-serif; 
+  font-size:13px; 
+  color: #333333; /* don't use just black, it won't look good */ 
+}
+
+ul {
+  list-style: none;
+}
+
+div.eventPic {
+  float:left;
+  clear:left;
+}
+
+li.event {
+  min-height: 60px;
+}
+
+.ac_results {
+  background: white
+}
