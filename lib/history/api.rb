@@ -18,7 +18,12 @@ class Api < Sinatra::Base
   end
 
   def current_user
-    session[:user_id] ? User.new(session[:user_id], client) : nil
+    if session[:user_id] 
+      user = User.new(session[:user_id], client) 
+      user.access_key ? user : session[:user_id] = nil
+    else
+      nil
+    end
   end
 
   def access_token
