@@ -1,7 +1,7 @@
 class User
   attr_reader :user_id, :client
 
-  def initialize(user_id, client)
+  def initialize(user_id, client = Api.client)
     @user_id = user_id
     @client = client
   end
@@ -17,7 +17,11 @@ class User
     end
   end
 
+  def access_key
+    Cache.get("#{user_id}-#{API_KEY}")
+  end
+
   def access_token
-    @access_token ||= OAuth2::AccessToken.new(client, Cache.get("#{user_id}-#{API_KEY}"))
+    @access_token ||= OAuth2::AccessToken.new(client, access_key)
   end
 end
