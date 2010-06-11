@@ -9,6 +9,6 @@
   <body>
     <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US" type="text/javascript"></script>
     <%= yield %>
-    <script type="text/javascript">  FB.init("2d03e24700c5ab29202a66e016960406", "/xd_receiver.htm"); </script>
+    <script type="text/javascript">  FB.init("<%= API_KEY %>", "/xd_receiver.htm"); </script>
   </body>
 </html>

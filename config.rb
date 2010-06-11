@@ -5,6 +5,7 @@ require 'oauth2'
 require 'json'
 require 'curb'
 require 'history'
+require 'yaml'
 
 facebook = YAML.load(File.open("config/facebook.yml").read)
 if $env != "testing"
