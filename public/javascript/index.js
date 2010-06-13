@@ -7,6 +7,7 @@ var EventListItem = Class.extend({
     var li = $(document.createElement('li'))
     var div = $(document.createElement('div'))
     li.attr("created_time", this.event.created_time)
+    li.attr("post_id", this.event.post_id)
     li.attr("class", "event")
     div.attr("uid", this.event.actor_id)
     div.attr("size", "square")

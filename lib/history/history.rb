@@ -6,7 +6,7 @@ class History
   end
 
   def self.fetch(user_id, friend_id, access_token)
-    query = "SELECT created_time, message, actor_id, source_id, comments, likes, attachment FROM stream WHERE source_id = #{user_id} AND actor_id = #{friend_id}"
+    query = "SELECT created_time, message, actor_id, source_id, post_id, comments, likes, attachment FROM stream WHERE source_id = #{user_id} AND actor_id = #{friend_id}"
     response = access_token.get("https://api.facebook.com/method/fql.query", :query => query, :format => "json")
     results = JSON.parse(response)
     # if the api returns a hash, it's empty
