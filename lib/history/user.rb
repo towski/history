@@ -22,6 +22,6 @@ class User
   end
 
   def access_token
-    @access_token ||= OAuth2::AccessToken.new(client, access_key)
+    OAuth2::AccessToken.new(client, access_key)
   end
 end

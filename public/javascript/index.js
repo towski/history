@@ -39,16 +39,33 @@ var EventListItem = Class.extend({
 })
 
 var History = Class.extend({
-  init: function(friend_id) {
+  init: function(friend_id, user_id) {
     this.friend_id = friend_id;
+    this.user_id = user_id;
+  },
+
+  firstUrl: function(){
+    return '/history/'+this.friend_id+'/'+this.user_id
+  },
+
+  secondUrl: function(){
+    return '/history/'+this.user_id+'/'+this.friend_id
   },
 
   getUserFriendHistory: function(callback){
-    $.getJSON('/history/'+this.friend_id, function(events){ callback(events); $('#loading').hide() })
+    $.getJSON(this.firstUrl(), function(events){ callback(events); $('#loading').hide() })
   },
 
   getFriendUserHistory: function(callback){
-    $.getJSON('/friend_history/'+this.friend_id, function(events){ callback(events); $('#loading_friends').hide(); })
+    $.getJSON(this.secondUrl(), function(events){ callback(events); $('#loading_friends').hide(); })
+  },
+
+  getComments: function(callback){
+    $.getJSON("/comments/"+this.user_id+"/"+this.friend_id, function(events){ callback(events); $('#loading_friends').hide(); })
+  },
+
+  getFriendsComments: function(callback){
+    $.getJSON("/comments/"+this.friend_id+"/"+this.user_id, function(events){ callback(events); $('#loading_friends').hide(); })
   },
 
   addHistory: function(events){
@@ -84,5 +101,7 @@ var History = Class.extend({
   run: function(){
     this.getUserFriendHistory(this.addHistory)
     this.getFriendUserHistory(this.addHistory)
+    this.getComments(this.addHistory)
+    this.getFriendsComments(this.addHistory)
   }
 });
