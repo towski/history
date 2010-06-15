@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Bobble Test</title>
+    <link href="test.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="./jquery.tmpl.js"></script>
+    <script type="text/javascript" language="JavaScript" src="../../public/javascript/class.js"></script>
+    <script type="text/javascript" language="JavaScript" src="../../public/javascript/index.js"></script>
+    <script type="text/javascript" language="JavaScript" src="bobble.js"></script>
+  </head>
+  <body>
+
+<script class="js-test" type="text/bobble">
+// hey
+mock("GET /history/2/1", '{"attachment":{},"actor_id":1,"source_id":2,"comments":{"can_remove":true, "count":0, "can_post":true, "comment_list":{}}, "actor_id":3400804, "created_time":1272648457, "message":"Hey! Happy birthday and feel better!", "source_id":6008237, "likes":{"href":"http://www.facebook.com/social_graph.php?node_id=890352519311&class=LikeManager", "user_likes":false, "friends":{}, "sample":{}, "count":0, "can_like":true} }')
+mock("GET /history/1/2", '{"attachment":{},"actor_id":1,"source_id":2,"comments":{"can_remove":true, "count":0, "can_post":true, "comment_list":{}}, "actor_id":3400804, "created_time":1272648457, "message":"Hey! Happy birthday and feel better!", "source_id":6008237, "likes":{"href":"http://www.facebook.com/social_graph.php?node_id=890352519311&class=LikeManager", "user_likes":false, "friends":{}, "sample":{}, "count":0, "can_like":true} }')
+mock("GET /comments/1/2", '{"attachment":{"media":"photo"},"actor_id":1,"source_id":2,"comments":{"can_remove":true, "count":0, "can_post":true, "comment_list":{}}, "actor_id":3400804, "created_time":1272648457, "message":"Hey! Happy birthday and feel better!", "source_id":6008237, "likes":{"href":"http://www.facebook.com/social_graph.php?node_id=890352519311&class=LikeManager", "user_likes":false, "friends":{}, "sample":{}, "count":0, "can_like":true} }')
+mock("GET /comments/2/1", '{"attachment":{"media":"photo"},"actor_id":1,"source_id":2,"comments":{"can_remove":true, "count":0, "can_post":true, "comment_list":{}}, "actor_id":3400804, "created_time":1272648457, "message":"Hey! Happy birthday and feel better!", "source_id":6008237, "likes":{"href":"http://www.facebook.com/social_graph.php?node_id=890352519311&class=LikeManager", "user_likes":false, "friends":{}, "sample":{}, "count":0, "can_like":true} }')
+var history = new History(1,2);
+history.run()
+advanceToTime(0);
+verifyMocks()
+</script>
+
+  <script type="text/javascript" language="JavaScript" src="bobbled-jquery-tests-runner.js"></script>
+  
+  </body>
+</html>

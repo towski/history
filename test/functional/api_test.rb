@@ -18,6 +18,7 @@ context "Api" do
   
   test "index without a parameter" do
     mock(CACHE).get("1_friends"){[]}
+    mock(CACHE).get("1-something").twice { "something" }
     get '/friends', {}, {'rack.session' => {:user_id => 1}}
     assert last_response.ok?
   end

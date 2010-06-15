@@ -21,7 +21,7 @@ var EventListItem = Class.extend({
     }
     var attachmentDiv = $(document.createElement('div'))
     var attachment = this.event.attachment
-    if(attachment.description != ""){
+    if(attachment.description && attachment.description != ""){
       var media = attachment.media[0];
       if(media && media.type == "photo"){
         attachmentDiv.append("<a href='"+media.href+"'><img src='"+media.src+"'/></a>")
@@ -44,20 +44,12 @@ var History = Class.extend({
     this.user_id = user_id;
   },
 
-  firstUrl: function(){
-    return '/history/'+this.friend_id+'/'+this.user_id
-  },
-
-  secondUrl: function(){
-    return '/history/'+this.user_id+'/'+this.friend_id
-  },
-
   getUserFriendHistory: function(callback){
-    $.getJSON(this.firstUrl(), function(events){ callback(events); $('#loading').hide() })
+    $.getJSON('/history/'+this.friend_id+'/'+this.user_id, function(events){ callback(events); $('#loading').hide() })
   },
 
   getFriendUserHistory: function(callback){
-    $.getJSON(this.secondUrl(), function(events){ callback(events); $('#loading_friends').hide(); })
+    $.getJSON('/history/'+this.user_id+'/'+this.friend_id, function(events){ callback(events); $('#loading_friends').hide(); })
   },
 
   getComments: function(callback){

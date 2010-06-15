@@ -1,4 +1,10 @@
 class Comment
+  def self.get_or_fetch(user_id, friend_id, access_token)
+    Cache.get("") do
+      fetch(user_id, friend_id, access_token)
+    end
+  end
+
   def self.fetch(user_id, friend_id, access_token)
     query = "select post_id from stream where source_id = #{user_id} and actor_id = #{user_id}"
     response = JSON.parse(access_token.get("https://api.facebook.com/method/fql.query", :query => query, :format => "json"))
