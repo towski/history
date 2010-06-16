@@ -61,24 +61,8 @@ class Api < Sinatra::Base
     end.join("\n")
   end
 
-  get '/friends_history/:id' do
-    History.new(params[:id], current_user.user_id, current_user.access_token).to_json
-  end
-
-  get '/history/:id' do
-    current_user.history_with(params[:id]).to_json
-  end
-
   get '/history/:first_id/:second_id' do
     History.new(params[:first_id], params[:second_id], current_user.access_token).to_json
-  end
-
-  get '/friends_comments/:id' do
-    Comment.get_or_fetch(params[:id], current_user.user_id, current_user.access_token).to_json
-  end
-
-  get '/comments/:id' do
-    Comment.get_or_fetch(current_user.user_id, params[:id], current_user.access_token).to_json
   end
 
   get '/comments/:first_id/:second_id' do
