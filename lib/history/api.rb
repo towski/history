@@ -46,7 +46,7 @@ class Api < Sinatra::Base
   get '/auth/facebook/callback' do
     access_token = client.web_server.get_access_token(params[:code], :redirect_uri => redirect_uri)
     user = JSON.parse(access_token.get('/me'))
-    Cache.set("#{user["id"]}-#{API_KEY}", access_token.token)
+    Cache.set("#{user["id"]}_#{API_KEY}", access_token.token)
     session[:user_id] = user["id"]
     redirect '/'
   end
