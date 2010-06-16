@@ -18,7 +18,7 @@ class User
   end
 
   def access_key
-    Cache.get("#{user_id}-#{API_KEY}")
+    @access_key ||= Cache.get("#{user_id}_#{API_KEY}")
   end
 
   def access_token

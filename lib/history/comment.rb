@@ -1,6 +1,6 @@
 class Comment
   def self.get_or_fetch(user_id, friend_id, access_token)
-    Cache.get("") do
+    Cache.get("#{user_id}_#{friend_id}_comments") do
       fetch(user_id, friend_id, access_token)
     end
   end
