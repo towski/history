@@ -76,13 +76,6 @@
 				prefix: "jQuery.each($1,function($2){with(this){",
 				suffix: "}});"
 			},
-			if: {
-				prefix: "if($1){",
-				suffix: "}"
-			},
-			else: {
-				prefix: "}else{"
-			},
 			html: {
 				prefix: "_.push(typeof $1==='function'?$1.call(this):$1);"
 			},

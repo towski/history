@@ -14,14 +14,14 @@ var EventListItem = Class.extend({
     div.attr("class", "eventPic")
     li.append(div)
     var commentsUl = $(document.createElement('ul'))
-    if(this.event.comments.count > 0){
+    if(this.event.comments && this.event.comments.count > 0){
       $(this.event.comments.comment_list).each(function(index, comment){
         commentsUl.append("<li>&nbsp;"+comment.text+"</li>")
       });
     }
     var attachmentDiv = $(document.createElement('div'))
     var attachment = this.event.attachment
-    if(attachment.description && attachment.description != ""){
+    if(attachment && attachment.description && attachment.description != ""){
       var media = attachment.media[0];
       if(media && media.type == "photo"){
         attachmentDiv.append("<a href='"+media.href+"'><img src='"+media.src+"'/></a>")
@@ -29,17 +29,14 @@ var EventListItem = Class.extend({
       attachmentDiv.append("<br/> "+attachment.description)
       li.append(attachmentDiv)
     }
-    li.append("\
-    <div> \
-      <fb:name uid='"+this.event.actor_id+"'/>&nbsp;"+this.event.message+" \
-    </div>");
+    li.append(this.event.message ? this.event.message : this.event.text)
     li.append(commentsUl)
     return li;
   }
 })
 
 var History = Class.extend({
-  init: function(friend_id, user_id) {
+  init: function(friend_id, user_id, disableXFBML) {
     this.friend_id = friend_id;
     this.user_id = user_id;
   },
@@ -53,11 +50,11 @@ var History = Class.extend({
   },
 
   getComments: function(callback){
-    $.getJSON("/comments/"+this.user_id+"/"+this.friend_id, function(events){ callback(events); $('#loading_friends').hide(); })
+    $.getJSON("/comments/"+this.user_id+"/"+this.friend_id, function(events){ callback(events); $('#loading_comments').hide(); })
   },
 
   getFriendsComments: function(callback){
-    $.getJSON("/comments/"+this.friend_id+"/"+this.user_id, function(events){ callback(events); $('#loading_friends').hide(); })
+    $.getJSON("/comments/"+this.friend_id+"/"+this.user_id, function(events){ callback(events); $('#loading_friends_comments').hide(); })
   },
 
   addHistory: function(events){
@@ -85,9 +82,11 @@ var History = Class.extend({
         }
       }
     });
-    $('div.eventPic').each(function(index,div){ 
-      FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic(div));
-    });
+    if(typeof(disableXFBML) == "undefined"){
+      $('div.eventPic').each(function(index,div){ 
+        FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic(div));
+      });
+    }
   },
 
   run: function(){
@@ -102,38 +101,30 @@ $().ready(function() {
   setFacebookPic = function(id){
     FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic($("#pic"+id)[0])); 
   };
-  formatItem = function(data, i, n, value) {
-    setTimeout('setFacebookPic('+data[1]+');', 10);
-    return '<div id="item'+data[1]+'" class="searchResult"><div id="pic'+data[1]+'" class="profilePic" uid="'+data[1]+'" size="square"></div><div class="name"> &nbsp;'+value+'</div></div>'
-  };
-  $("#friends").autocomplete("friends", {
+  var options = {
     width: 320,
     max: 4,
     highlight: false,
     scroll: true,
     scrollHeight: 300,
-    formatItem: formatItem,
+    formatItem: function(data, i, n, value) {
+      setTimeout('setFacebookPic('+data[1]+');', 10);
+      return '<div id="item'+data[1]+'" class="searchResult"><div id="pic'+data[1]+'" class="profilePic" uid="'+data[1]+'" size="square"></div><div class="name"> &nbsp;'+value+'</div></div>'
+    },
     formatResult: function(data, value) {
       return value.split(".")[0];
     }
-  }).result(function(e, item) {
+  }
+  $("#friends").autocomplete("friends", options).result(function(e, item) {
     $('.loading').show();
     var history = new History(facebookId, item[1])
     history.run()
     $('.event').remove();
+  });
+  $("#friend1").autocomplete("friends", options).result(function(e, item) {
     $('#hiddenId').attr('value',item[1])
   });
-  $("#other_friends").autocomplete("friends", {
-    width: 320,
-    max: 4,
-    highlight: false,
-    scroll: true,
-    scrollHeight: 300,
-    formatItem: formatItem,
-    formatResult: function(data, value) {
-      return value.split(".")[0];
-    }
-  }).result(function(e, item) {
+  $("#friend2").autocomplete("friends", options).result(function(e, item) {
     $('.loading').show();
     var history = new History(item[1], $('#hiddenId').attr('value'))
     history.run()

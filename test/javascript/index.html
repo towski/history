@@ -11,36 +11,43 @@
     <script type="text/javascript" language="JavaScript" src="bobble.js"></script>
   </head>
   <body>
-    <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US" type="text/javascript"></script>
-    <script type="text/javascript">  FB.init("2d03e24700c5ab29202a66e016960406", "/xd_receiver.htm"); </script>
+    <script type="text/javascript">  disableXFBML = true; </script>
 
 <script class="js-test" type="text/bobble">
 // hey
 mock("GET /history/2/1", '{"attachment":{},"actor_id":1,"source_id":2,"comments":{"can_remove":true, "count":0, "can_post":true, "comment_list":{}}, "actor_id":3400804, "created_time":1272648457, "message":"Hey! Happy birthday and feel better!", "source_id":6008237, "likes":{"href":"http://www.facebook.com/social_graph.php?node_id=890352519311&class=LikeManager", "user_likes":false, "friends":{}, "sample":{}, "count":0, "can_like":true} }')
 mock("GET /history/1/2", '{"attachment":{},"actor_id":1,"source_id":2,"comments":{"can_remove":true, "count":0, "can_post":true, "comment_list":{}}, "actor_id":3400804, "created_time":1272648457, "message":"Hey! Happy birthday and feel better!", "source_id":6008237, "likes":{"href":"http://www.facebook.com/social_graph.php?node_id=890352519311&class=LikeManager", "user_likes":false, "friends":{}, "sample":{}, "count":0, "can_like":true} }')
-mock("GET /comments/1/2", '{"attachment":{"media":"photo"},"actor_id":1,"source_id":2,"comments":{"can_remove":true, "count":0, "can_post":true, "comment_list":{}}, "actor_id":3400804, "created_time":1272648457, "message":"Hey! Happy birthday and feel better!", "source_id":6008237, "likes":{"href":"http://www.facebook.com/social_graph.php?node_id=890352519311&class=LikeManager", "user_likes":false, "friends":{}, "sample":{}, "count":0, "can_like":true} }')
-mock("GET /comments/2/1", '{"attachment":{"media":"photo"},"actor_id":1,"source_id":2,"comments":{"can_remove":true, "count":0, "can_post":true, "comment_list":{}}, "actor_id":3400804, "created_time":1272648457, "message":"Hey! Happy birthday and feel better!", "source_id":6008237, "likes":{"href":"http://www.facebook.com/social_graph.php?node_id=890352519311&class=LikeManager", "user_likes":false, "friends":{}, "sample":{}, "count":0, "can_like":true} }')
-var history = new History(1,2);
+mock("GET /comments/1/2", '[{"text":"look who it is","time":1274724964,"created_time":1274724964}]')
+mock("GET /comments/2/1", '[{"text":"look who it is","time":1274724964,"created_time":1274724964}]')
+var history = new History(1,2, true);
 history.run()
 advanceToTime(0);
 verifyMocks()
 assert($("ul#history li").length == 4)
+assert($(".loading:visible").length == 0, 'visible')
 </script>
 
 <script class="js-test" type="text/bobble">
 //autocomplete
-$("#other_friends").trigger("result", ["towski", "1"])
+$("#friend1").trigger("result", [["towski","1"]])
+assert($("#hiddenId").attr('value') == "1")
+</script>
+
+<script class="js-test" type="text/bobble">
+//autocomplete
+$("#friend2").trigger("result", [["towski", "1"]])
 assert($(".loading:visible").length != 0, 'visible')
 assert($("ul#history li").length == 0)
 </script>
 
-  <script type="text/javascript" language="JavaScript" src="bobbled-jquery-tests-runner.js"></script>
+<script type="text/javascript" language="JavaScript" src="bobbled-jquery-tests-runner.js"></script>
 <p>
   <label>Search for friends:</label>
   <input type="text" id='friends' />
+  <label>Or between two friends:</label>
+  <input type="text" id='friend1' />
   <input type="hidden" id='hiddenId' />
-  <label>or between friends</label>
-  <input type="text" id='other_friends' />
+  <input type="text" id='friend2' />
 </p>
 <div id="loading" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading your stream data</div>
 <div id="loading_friends" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading friends stream data</div>

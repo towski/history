@@ -2,12 +2,15 @@
   facebookId = <%= current_user.user_id %>
 </script>
 <p>
-  <label>Search for friends:</label>
+  <label>See your interaction with a friend:</label>
   <input type="text" id='friends' />
+  <label>Or between friends:</label>
+  <input type="text" id='friend1' />
   <input type="hidden" id='hiddenId' />
-  <label>or between friends</label>
-  <input type="text" id='other_friends' />
+  <input type="text" id='friend2' />
 </p>
 <div id="loading" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading your stream data</div>
 <div id="loading_friends" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading friends stream data</div>
+<div id="loading_comments" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading your comments</div>
+<div id="loading_friends_comments" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading friends comments</div>
 <ul id='history'></ul>
