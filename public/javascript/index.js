@@ -1,39 +1,33 @@
-var EventListItem = Class.extend({
-  init: function(event) {
-    this.event = event;
-  },
-
-  toLi: function(){
-    var li = $(document.createElement('li'))
-    var div = $(document.createElement('div'))
-    li.attr("created_time", this.event.created_time)
-    li.attr("post_id", this.event.post_id)
-    li.attr("class", "event")
-    div.attr("uid", this.event.actor_id)
-    div.attr("size", "square")
-    div.attr("class", "eventPic")
-    li.append(div)
-    var commentsUl = $(document.createElement('ul'))
-    if(this.event.comments && this.event.comments.count > 0){
-      $(this.event.comments.comment_list).each(function(index, comment){
-        commentsUl.append("<li>&nbsp;"+comment.text+"</li>")
-      });
-    }
-    var attachmentDiv = $(document.createElement('div'))
-    var attachment = this.event.attachment
-    if(attachment && attachment.description && attachment.description != ""){
-      var media = attachment.media[0];
-      if(media && media.type == "photo"){
-        attachmentDiv.append("<a href='"+media.href+"'><img src='"+media.src+"'/></a>")
-      }
-      attachmentDiv.append("<br/> "+attachment.description)
-      li.append(attachmentDiv)
-    }
-    li.append(this.event.message ? this.event.message : this.event.text)
-    li.append(commentsUl)
-    return li;
+var eventToLi = function(event){
+  var li = $(document.createElement('li'))
+  var div = $(document.createElement('div'))
+  li.attr("created_time", event.created_time)
+  li.attr("post_id", event.post_id)
+  li.attr("class", "event")
+  div.attr("uid", event.actor_id)
+  div.attr("size", "square")
+  div.attr("class", "eventPic")
+  li.append(div)
+  var commentsUl = $(document.createElement('ul'))
+  if(event.comments && event.comments.count > 0){
+    $(event.comments.comment_list).each(function(index, comment){
+      commentsUl.append("<li>&nbsp;"+comment.text+"</li>")
+    });
   }
-})
+  var attachmentDiv = $(document.createElement('div'))
+  var attachment = event.attachment
+  if(attachment && attachment.description && attachment.description != ""){
+    var media = attachment.media[0];
+    if(media && media.type == "photo"){
+      attachmentDiv.append("<a href='"+media.href+"'><img src='"+media.src+"'/></a>")
+    }
+    attachmentDiv.append("<br/> "+attachment.description)
+    li.append(attachmentDiv)
+  }
+  li.append(event.message ? event.message : event.text)
+  li.append(commentsUl)
+  return li;
+}
 
 var History = Class.extend({
   init: function(friend_id, user_id, disableXFBML) {
@@ -63,18 +57,15 @@ var History = Class.extend({
     events.each(function(index, event){
       var eventPlaced = false;
       if(list.length == 0){
-        var li = new EventListItem(event)
-        $("ul#history").append(li.toLi());
+        $("ul#history").append(eventToLi(event));
       } else{
         while(!eventPlaced){
           var head = $(list[0])
           if(head == null || list.length == 0){
-            var li = new EventListItem(event)
-            $("ul#history").append(li.toLi());
+            $("ul#history").append(eventToLi(event));
             eventPlaced = true;
           }else if(head.attr('created_time') < event.created_time){
-            var li = new EventListItem(event)
-            head.before(li.toLi());
+            head.before(eventToLi(event));
             eventPlaced = true;
           }else{
             list.splice(0,1)
@@ -89,11 +80,14 @@ var History = Class.extend({
     }
   },
 
+  addComments: function(comments){
+  },
+
   run: function(){
     this.getUserFriendHistory(this.addHistory)
     this.getFriendUserHistory(this.addHistory)
-    this.getComments(this.addHistory)
-    this.getFriendsComments(this.addHistory)
+    this.getComments(this.addComments)
+    this.getFriendsComments(this.addComments)
   }
 });
 
