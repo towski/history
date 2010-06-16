@@ -1,15 +1,18 @@
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
   <head>
     <title>Bobble Test</title>
     <link href="test.css" media="screen" rel="stylesheet" type="text/css" />
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="./jquery.tmpl.js"></script>
     <script type="text/javascript" language="JavaScript" src="../../public/javascript/class.js"></script>
+    <script type="text/javascript" language="JavaScript" src="../../public/javascript/jquery-autocomplete/jquery.autocomplete.js"></script>
     <script type="text/javascript" language="JavaScript" src="../../public/javascript/index.js"></script>
     <script type="text/javascript" language="JavaScript" src="bobble.js"></script>
   </head>
   <body>
+    <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US" type="text/javascript"></script>
+    <script type="text/javascript">  FB.init("2d03e24700c5ab29202a66e016960406", "/xd_receiver.htm"); </script>
 
 <script class="js-test" type="text/bobble">
 // hey
@@ -21,9 +24,27 @@ var history = new History(1,2);
 history.run()
 advanceToTime(0);
 verifyMocks()
+assert($("ul#history li").length == 4)
+</script>
+
+<script class="js-test" type="text/bobble">
+//autocomplete
+$("#other_friends").trigger("result", ["towski", "1"])
+assert($(".loading:visible").length != 0, 'visible')
+assert($("ul#history li").length == 0)
 </script>
 
   <script type="text/javascript" language="JavaScript" src="bobbled-jquery-tests-runner.js"></script>
+<p>
+  <label>Search for friends:</label>
+  <input type="text" id='friends' />
+  <input type="hidden" id='hiddenId' />
+  <label>or between friends</label>
+  <input type="text" id='other_friends' />
+</p>
+<div id="loading" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading your stream data</div>
+<div id="loading_friends" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading friends stream data</div>
+<ul id='history'></ul>
   
   </body>
 </html>

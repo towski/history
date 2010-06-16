@@ -1,49 +1,5 @@
-<script type="text/javascript">
-$().ready(function() {
+<script>
   facebookId = <%= current_user.user_id %>
-  setFacebookPic = function(id){
-    FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic($("#pic"+id)[0])); 
-  };
-  formatItem = function(data, i, n, value) {
-    setTimeout('setFacebookPic('+data[1]+');', 10);
-    return '<div id="item'+data[1]+'" class="searchResult"><div id="pic'+data[1]+'" class="profilePic" uid="'+data[1]+'" size="square"></div><div class="name"> &nbsp;'+value+'</div></div>'
-  };
-  $("#friends").autocomplete("friends", {
-    width: 320,
-    max: 4,
-    highlight: false,
-    scroll: true,
-    scrollHeight: 300,
-    formatItem: formatItem,
-    formatResult: function(data, value) {
-      return value.split(".")[0];
-    }
-  }).result(function(e, item) {
-    $('div#loading_friends#friends_name').html(item[0])
-    $('.loading').show();
-    var history = new History(facebookId, item[1])
-    history.run()
-    $('.event').remove();
-    $('#hiddenId').attr('value',item[1])
-  });
-  $("#other_friends").autocomplete("friends", {
-    width: 320,
-    max: 4,
-    highlight: false,
-    scroll: true,
-    scrollHeight: 300,
-    formatItem: formatItem,
-    formatResult: function(data, value) {
-      return value.split(".")[0];
-    }
-  }).result(function(e, item) {
-    $('div#loading_friends#friends_name').html(item[0])
-    $('.loading').show();
-    var history = new History(item[1], $('#hiddenId').attr('value'))
-    history.run()
-    $('.event').remove();
-  });
-});
 </script>
 <p>
   <label>Search for friends:</label>
@@ -53,5 +9,5 @@ $().ready(function() {
   <input type="text" id='other_friends' />
 </p>
 <div id="loading" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading your stream data</div>
-<div id="loading_friends" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading stream data from <span id="friends_name"></span></div>
+<div id="loading_friends" class='loading' style="display:none"><img src="/images/loading.gif"/>Loading friends stream data</div>
 <ul id='history'></ul>

@@ -20,7 +20,7 @@ var TestPublicAPI = (function() {
   
   $().ready(function() {
     $('.js-test').each(function(index, t) {
-      var result_message = null, failed = false, bobble;
+      var result_message = '', failed = false, bobble;
       assertions_count = 0;
       
       try {
@@ -60,6 +60,10 @@ var TestPublicAPI = (function() {
       assertions_count++;
       if (expected != actual) { throw(cat(message, ("Expected " + expected + ", but was " + actual))); }
     },
+    assert: function(expected, message) {
+      assertions_count++;
+      if (!expected) { throw(cat(message, ("Expected " + expected))); }
+    },
     assertThrows: function(fn, message) {
       var threw = false;
       try { fn(); } catch(_) { threw = true; }
@@ -69,6 +73,7 @@ var TestPublicAPI = (function() {
 })();
 
 var assertEquals = TestPublicAPI.assertEquals;
+var assert = TestPublicAPI.assert;
 var assertThrows = TestPublicAPI.assertThrows;
 
 //document.observe('click', function(e) {

@@ -97,3 +97,46 @@ var History = Class.extend({
     this.getFriendsComments(this.addHistory)
   }
 });
+
+$().ready(function() {
+  setFacebookPic = function(id){
+    FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic($("#pic"+id)[0])); 
+  };
+  formatItem = function(data, i, n, value) {
+    setTimeout('setFacebookPic('+data[1]+');', 10);
+    return '<div id="item'+data[1]+'" class="searchResult"><div id="pic'+data[1]+'" class="profilePic" uid="'+data[1]+'" size="square"></div><div class="name"> &nbsp;'+value+'</div></div>'
+  };
+  $("#friends").autocomplete("friends", {
+    width: 320,
+    max: 4,
+    highlight: false,
+    scroll: true,
+    scrollHeight: 300,
+    formatItem: formatItem,
+    formatResult: function(data, value) {
+      return value.split(".")[0];
+    }
+  }).result(function(e, item) {
+    $('.loading').show();
+    var history = new History(facebookId, item[1])
+    history.run()
+    $('.event').remove();
+    $('#hiddenId').attr('value',item[1])
+  });
+  $("#other_friends").autocomplete("friends", {
+    width: 320,
+    max: 4,
+    highlight: false,
+    scroll: true,
+    scrollHeight: 300,
+    formatItem: formatItem,
+    formatResult: function(data, value) {
+      return value.split(".")[0];
+    }
+  }).result(function(e, item) {
+    $('.loading').show();
+    var history = new History(item[1], $('#hiddenId').attr('value'))
+    history.run()
+    $('.event').remove();
+  });
+});
