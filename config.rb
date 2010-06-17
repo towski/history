@@ -17,3 +17,7 @@ else
   CACHE = MemCache.new 'localhost:11211', :namespace => 'test'
 end
 
+def query(query)
+  access_token = User.new(6008237).access_token
+  JSON.parse(access_token.get("https://api.facebook.com/method/fql.query", :query => query, :format => "json"))
+end

@@ -52,9 +52,8 @@ var History = Class.extend({
   },
 
   addHistory: function(events){
-    events = $(events)
     var list = $("ul#history li")
-    events.each(function(index, event){
+    $(events).each(function(index, event){
       var eventPlaced = false;
       if(list.length == 0){
         $("ul#history").append(eventToLi(event));
@@ -81,6 +80,22 @@ var History = Class.extend({
   },
 
   addComments: function(comments){
+    $(comments).each(function(index, comment){
+      var li = $('li[post_id='+comment.post_id+']')[0];
+      if(typeof(li) == "undefined"){
+        var added;
+        $("ul#history li").each(function(index, li){
+          if(!added && li.created_time < comment.post.created_time){
+            $(li).before(eventToLi(comment.post));
+            added = true;
+          }
+        })
+        if(!added){
+          $("ul#history").append(eventToLi(comment.post));
+        }
+      }
+    });
+    //[{"post_id"=>"702502119_400073052119", "text"=>"Damn DUDE!", "time"=>1275021333, "fromid"=>692791726}]
   },
 
   run: function(){
