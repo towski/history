@@ -8,8 +8,8 @@ require 'history'
 require 'yaml'
 require 'memcache'
 
-facebook = YAML.load(File.open("config/facebook.yml").read)
 if $env == "development"
+  facebook = YAML.load(File.open("config/facebook.yml").read)
   API_KEY = facebook["api_key"]
   SECRET_KEY = facebook["secret_key"]
   CACHE = MemCache.new 'localhost:11211', :namespace => 'my_namespace'
