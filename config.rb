@@ -16,7 +16,7 @@ if $env == "development"
 elsif ENV["RACK_ENV"] == "production"
   API_KEY = ENV["API_KEY"]
   SECRET_KEY = ENV["SECRET_KEY"]
-  require 'memcache'
+  require 'memcached'
   CACHE = MemCached.new
 else
   require 'memcache'
