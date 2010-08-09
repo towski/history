@@ -3,5 +3,3 @@ oauth2
 json
 curb
 memcache
-#hpricot --version '>= 0.2' --source code.whytheluckystiff.net
-#formtastic --ignore-dependencies
