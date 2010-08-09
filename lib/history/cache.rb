@@ -1,9 +1,12 @@
 class Cache
   def self.get(key)
-    results = CACHE.get(key)
-    if !results && block_given?
-      results = yield 
-      CACHE.set(key, results)
+    begin
+      results = CACHE.get(key)
+    rescue Memcached::NotFound
+      if block_given?
+        results = yield 
+        CACHE.set(key, results)
+      end
     end
     results
   end

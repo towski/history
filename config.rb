@@ -6,22 +6,18 @@ require 'json'
 require 'curb'
 require 'history'
 require 'yaml'
+require 'memcached'
 
-if $env == "development"
-  require 'memcache'
+if ENV["RACK_ENV"] != "production"
   facebook = YAML.load(File.open("config/facebook.yml").read)
   API_KEY = facebook["api_key"]
   SECRET_KEY = facebook["secret_key"]
-  CACHE = MemCache.new 'localhost:11211', :namespace => 'my_namespace'
 elsif ENV["RACK_ENV"] == "production"
   API_KEY = ENV["API_KEY"]
   SECRET_KEY = ENV["SECRET_KEY"]
-  require 'memcached'
-  CACHE = Memcached.new
-else
-  require 'memcache'
-  CACHE = MemCache.new 'localhost:11211', :namespace => 'test'
 end
+
+CACHE = Memcached.new
 
 def query(query)
   access_token = User.new(6008237).access_token
