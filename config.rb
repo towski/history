@@ -9,9 +9,13 @@ require 'yaml'
 require 'memcache'
 
 facebook = YAML.load(File.open("config/facebook.yml").read)
-if $env != "testing"
+if $env == "development"
   API_KEY = facebook["api_key"]
   SECRET_KEY = facebook["secret_key"]
+  CACHE = MemCache.new 'localhost:11211', :namespace => 'my_namespace'
+elsif $env == "production"
+  API_KEY = env["API_KEY"]
+  SECRET_KEY = env["SECRET_KEY"]
   CACHE = MemCache.new 'localhost:11211', :namespace => 'my_namespace'
 else
   CACHE = MemCache.new 'localhost:11211', :namespace => 'test'
