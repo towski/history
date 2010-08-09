@@ -13,7 +13,7 @@ if $env == "development"
   API_KEY = facebook["api_key"]
   SECRET_KEY = facebook["secret_key"]
   CACHE = MemCache.new 'localhost:11211', :namespace => 'my_namespace'
-elsif $env == "production"
+elsif env["RACK_ENV"] == "production"
   API_KEY = env["API_KEY"]
   SECRET_KEY = env["SECRET_KEY"]
   CACHE = MemCache.new 'localhost:11211', :namespace => 'my_namespace'
