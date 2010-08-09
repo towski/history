@@ -14,10 +14,8 @@ if $env == "development"
   SECRET_KEY = facebook["secret_key"]
   CACHE = MemCache.new 'localhost:11211', :namespace => 'my_namespace'
 elsif ENV["RACK_ENV"] == "production"
-  require 'memcached'
   API_KEY = ENV["API_KEY"]
   SECRET_KEY = ENV["SECRET_KEY"]
-  CACHE = Memcached.new
 else
   require 'memcache'
   CACHE = MemCache.new 'localhost:11211', :namespace => 'test'
