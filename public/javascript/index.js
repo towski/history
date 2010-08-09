@@ -1,17 +1,22 @@
+var parsePictures = function(){
+  if(typeof(disableXFBML) == "undefined"){
+    FB.XFBML.parse($('ul').get(0))
+  }
+};
+
 var eventToLi = function(event){
   var li = $(document.createElement('li'))
-  var div = $(document.createElement('div'))
+  var div = $(document.createElement('fb:profile-pic'))
   li.attr("created_time", event.created_time)
   li.attr("post_id", event.post_id)
   li.attr("class", "event")
   div.attr("uid", event.actor_id)
   div.attr("size", "square")
-  div.attr("class", "eventPic")
   li.append(div)
   var commentsUl = $(document.createElement('ul'))
   if(event.comments && event.comments.count > 0){
     $(event.comments.comment_list).each(function(index, comment){
-      commentsUl.append("<li>&nbsp;"+comment.text+"</li>")
+      commentsUl.append("<li><fb:profile-pic uid='"+ comment.fromid +"' size='square' width='25px' height='25px'></fb:profile-pic>&nbsp;"+comment.text+"</li>")
     });
   }
   var attachmentDiv = $(document.createElement('div'))
@@ -36,19 +41,19 @@ var History = Class.extend({
   },
 
   getUserFriendHistory: function(callback){
-    $.getJSON('/history/'+this.friend_id+'/'+this.user_id, function(events){ callback(events); $('#loading').hide() })
+    $.getJSON('/history/'+this.friend_id+'/'+this.user_id, function(events){ callback(events); $('#loading').hide(); parsePictures()  })
   },
 
   getFriendUserHistory: function(callback){
-    $.getJSON('/history/'+this.user_id+'/'+this.friend_id, function(events){ callback(events); $('#loading_friends').hide(); })
+    $.getJSON('/history/'+this.user_id+'/'+this.friend_id, function(events){ callback(events); $('#loading_friends').hide(); parsePictures() })
   },
 
   getComments: function(callback){
-    $.getJSON("/comments/"+this.user_id+"/"+this.friend_id, function(events){ callback(events); $('#loading_comments').hide(); })
+    $.getJSON("/comments/"+this.user_id+"/"+this.friend_id, function(events){ glob = events; callback(events); $('#loading_comments').hide(); parsePictures() })
   },
 
   getFriendsComments: function(callback){
-    $.getJSON("/comments/"+this.friend_id+"/"+this.user_id, function(events){ callback(events); $('#loading_friends_comments').hide(); })
+    $.getJSON("/comments/"+this.friend_id+"/"+this.user_id, function(events){ callback(events); $('#loading_friends_comments').hide(); parsePictures() })
   },
 
   addHistory: function(events){
@@ -72,11 +77,6 @@ var History = Class.extend({
         }
       }
     });
-    if(typeof(disableXFBML) == "undefined"){
-      $('div.eventPic').each(function(index,div){ 
-        FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic(div));
-      });
-    }
   },
 
   addComments: function(comments){
@@ -85,14 +85,14 @@ var History = Class.extend({
       if(typeof(li) == "undefined"){
         var added;
         $("ul#history li").each(function(index, li){
-          if(!added && li.created_time < comment.post.created_time){
+          if(!added && $(li).attr('created_time') < comment.post.created_time){
             $(li).before(eventToLi(comment.post));
             added = true;
           }
         })
-        if(!added){
-          $("ul#history").append(eventToLi(comment.post));
-        }
+        //if(!added){
+        //  $("ul#history").append(eventToLi(comment.post));
+        //}
       }
     });
     //[{"post_id"=>"702502119_400073052119", "text"=>"Damn DUDE!", "time"=>1275021333, "fromid"=>692791726}]
@@ -108,7 +108,7 @@ var History = Class.extend({
 
 $().ready(function() {
   setFacebookPic = function(id){
-    FB.XFBML.Host.addElement(new FB.XFBML.ProfilePic($("#pic"+id)[0])); 
+    FB.XFBML.parse($("#item"+id).get(0)); 
   };
   var options = {
     width: 320,
@@ -118,7 +118,7 @@ $().ready(function() {
     scrollHeight: 300,
     formatItem: function(data, i, n, value) {
       setTimeout('setFacebookPic('+data[1]+');', 10);
-      return '<div id="item'+data[1]+'" class="searchResult"><div id="pic'+data[1]+'" class="profilePic" uid="'+data[1]+'" size="square"></div><div class="name"> &nbsp;'+value+'</div></div>'
+      return '<div id="item'+data[1]+'" class="searchResult"><fb:profile-pic id="pic'+data[1]+'" class="profilePic" uid="'+data[1]+'" size="square"></div><div class="name"> &nbsp;'+value+'</div></div>'
     },
     formatResult: function(data, value) {
       return value.split(".")[0];

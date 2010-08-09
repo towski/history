@@ -7,8 +7,11 @@
     <link rel='stylesheet' href="/style/global.css" type="text/css"/>
   </head>
   <body>
-    <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US" type="text/javascript"></script>
     <%= yield %>
-    <script type="text/javascript">  FB.init("<%= API_KEY %>", "/xd_receiver.htm"); </script>
+    <div id="fb-root"></div>
+    <script src="http://connect.facebook.net/en_US/all.js"></script>
+    <script type="text/javascript">  
+    FB.init({appId: '<%= API_KEY %>', status: true, cookie: true, xfbml: true});
+    </script>
   </body>
 </html>
