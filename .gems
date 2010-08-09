@@ -2,4 +2,4 @@ sinatra -v 1.0
 oauth2
 json
 curb
-memcache-client
+memcached-northscale
