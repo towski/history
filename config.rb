@@ -17,7 +17,7 @@ elsif ENV["RACK_ENV"] == "production"
   API_KEY = ENV["API_KEY"]
   SECRET_KEY = ENV["SECRET_KEY"]
   require 'memcached'
-  CACHE = MemCached.new
+  CACHE = Memcached.new
 else
   require 'memcache'
   CACHE = MemCache.new 'localhost:11211', :namespace => 'test'
