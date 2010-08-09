@@ -1,11 +1,6 @@
 class Api < Sinatra::Base
   set :environment, :development
   enable :sessions
-
-  configure do
-    require 'memcached'
-    CACHE = Memcached.new
-  end
     
   def redirect_uri
     uri = URI.parse(request.url)
