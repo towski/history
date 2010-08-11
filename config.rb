@@ -23,3 +23,8 @@ def query(query)
   access_token = User.new(6008237).access_token
   JSON.parse(access_token.get("https://api.facebook.com/method/fql.query", :query => query, :format => "json"))
 end
+
+def comment_get
+  access_token = User.new(6008237).access_token
+  Comment.fetch(6008237, 6008379, access_token)
+end

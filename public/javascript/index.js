@@ -79,6 +79,9 @@ var History = Class.extend({
     });
   },
 
+  //[{"post":{"comments":{"can_remove":false,"can_post":true,"count":1,"comment_list":[{"time":1278896190,"text":"bull shit","id":"6008379_131334013569703_874997","fromid":6008237}]},
+  //,"post_id":"6008379_131334013569703","actor_id":6008379,"created_time":1278882125,"source_id":6008379,"message":"Should have been a corner. Refs have blown this whole game.",
+  //},"time":1278896190,"text":"bull shit","post_id":"6008379_131334013569703","fromid":6008237}]
   addComments: function(comments){
     $(comments).each(function(index, comment){
       var li = $('li[post_id='+comment.post_id+']')[0];
