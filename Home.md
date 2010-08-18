@@ -1,1 +1,1 @@
-History is a facebook app
+This is the home page
